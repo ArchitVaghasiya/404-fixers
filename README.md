@@ -1,6 +1,12 @@
 # 404-fixers::ReWear – Community Clothing Exchange 
 
+Team name - 404-Fixers
 
+Team Email Address - 1). architvaghasiya231918@gmail.com
+                     2). 24ce024@charusat.edu.in
+                     3). shreejayshiyani001@gmail.com
+                     4). jayrajsinhbhatti9687@gmail.com
+                     
 Overview: 
 Develop ReWear, a web-based platform that enables users to exchange unused clothing 
 through direct swaps or a point-based redemption system. The goal is to promote sustainable 
