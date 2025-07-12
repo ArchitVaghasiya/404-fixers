@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Online Thrift Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(160deg, #054d20, #6dd57b);
+      color: #333;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #054d20;
+      color: #6dd57b;
+      padding: 1.2rem;
+      text-align: center;
+      letter-spacing: 2px;
+      font-size: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .dashboard-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      padding: 40px 30px 30px 30px;
+      position: relative;
+    }
+    .dashboard-title {
+      font-size: 2.2rem;
+      color: #054d20;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 0 #6dd57b;
+    }
+    .dashboard-user {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 30px;
+      background: #d9d9d9;
+      border-radius: 8px;
+      padding: 18px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .dashboard-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #57d359;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(87,211,89,0.10);
+    }
+    .dashboard-user-info {
+      flex: 1;
+    }
+    .dashboard-user-info h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.3rem;
+      color: #054d20;
+    }
+    .dashboard-user-info p {
+      margin: 0;
+      color: #083409;
+      font-size: 1rem;
+    }
+    .dashboard-logout {
+      background: #57d359;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
+      margin-left: auto;
+    }
+    .dashboard-logout:hover {
+      background: #054d20;
+    }
+    .dashboard-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .dashboard-nav-btn {
+      background: #57d359;
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      padding: 8px 22px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px rgba(87,211,89,0.08);
+      margin-bottom: 6px;
+    }
+    .dashboard-nav-btn.active, .dashboard-nav-btn:hover {
+      background: #054d20;
+      color: #fff;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .dashboard-card {
+      background: #fff; /* Removed gradient, simple white */
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      padding: 36px 20px 28px 20px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      cursor: pointer;
+      position: relative;
+      border: 2px solid #57d359;
+    }
+    .dashboard-card:hover, .dashboard-card.active {
+      transform: translateY(-6px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(87,211,89,0.18);
+      background: #f7fff9;
+      border-color: #054d20;
+    }
+    .dashboard-card-icon {
+      font-size: 2.7rem;
+      color: #054d20;
+      margin-bottom: 12px;
+      display: block;
+      transition: color 0.2s;
+    }
+    .dashboard-card-title {
+      font-size: 1.2rem;
+      color: #083409;
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .dashboard-card-desc {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 0;
+    }
+    .dashboard-content {
+      margin-top: 30px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(87,211,89,0.08);
+      padding: 28px 20px;
+      min-height: 180px;
+      display: none;
+      animation: fadeIn 0.4s;
+      border: 1px solid #e0e0e0;
+    }
+    .dashboard-content.active {
+      display: block;
+    }
+    .dashboard-content h2 {
+      color: #054d20;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .dashboard-content p {
+      color: #333;
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+    }
+    /* Purchased products table style */
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    .product-table th, .product-table td {
+      border: 1px solid #d9d9d9;
+      padding: 10px 8px;
+      text-align: left;
+    }
+    .product-table th {
+      background: #57d359;
+      color: #fff;
+      font-weight: bold;
+    }
+    .product-table tr:nth-child(even) {
+      background: #f7fff9;
+    }
+    .product-table tr:hover {
+      background: #e6ffe6;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    @media (max-width: 600px) {
+      .dashboard-container {
+        padding: 18px 6px;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-user {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .dashboard-logout {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+      .dashboard-nav {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .product-table th, .product-table td {
+        font-size: 0.95rem;
+        padding: 7px 4px;
+      }
+    }
+  </style>
+  <script>
+    function showContent(id) {
+      document.querySelectorAll('.dashboard-card').forEach(card => card.classList.remove('active'));
+      document.querySelectorAll('.dashboard-content').forEach(content => content.classList.remove('active'));
+      document.querySelectorAll('.dashboard-nav-btn').forEach(btn => btn.classList.remove('active'));
+      if(document.getElementById(id + '-card')) {
+        document.getElementById(id + '-card').classList.add('active');
+      }
+      if(document.getElementById(id + '-content')) {
+        document.getElementById(id + '-content').classList.add('active');
+      }
+      if(document.getElementById(id + '-nav')) {
+        document.getElementById(id + '-nav').classList.add('active');
+      }
+      // If "products" selected, load purchased products file (simulate with inline table)
+      if(id === 'products') {
+        loadPurchasedProducts();
+      }
+    }
+    window.onload = function() {
+      showContent('profile');
+    }
+    // Simulate loading purchased products (replace with AJAX if needed)
+    function loadPurchasedProducts() {
+      const productsContent = document.getElementById('products-content');
+      productsContent.innerHTML = `
+        <h2>My Purchased Products</h2>
+        <p>Here is a list of products you have purchased:</p>
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Date Purchased</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Emerald Zip Hoodie</td>
+              <td>Clothing</td>
+              <td>$36.00</td>
+              <td>2025-07-10</td>
+              <td>Delivered</td>
+            </tr>
+            <tr>
+              <td>Floral Summer Dress</td>
+              <td>Clothing</td>
+              <td>$28.00</td>
+              <td>2025-06-22</td>
+              <td>Shipped</td>
+            </tr>
+            <tr>
+              <td>Black Slim Jeans</td>
+              <td>Clothing</td>
+              <td>$32.00</td>
+              <td>2025-05-15</td>
+              <td>Delivered</td>
+            </tr>
+            <tr>
+              <td>Blue Wool Scarf</td>
+              <td>Accessory</td>
+              <td>$14.00</td>
+              <td>2025-04-30</td>
+              <td>Delivered</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+  </script>
+</head>
+<body>
+  <header>
+    Online Thrift Store Dashboard
+  </header>
+  <div class="dashboard-container">
+    <div class="dashboard-user">
+      <img class="dashboard-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+      <div class="dashboard-user-info">
+        <h2>John Doe</h2>
+        <p>john.doe@email.com</p>
+      </div>
+      <button class="dashboard-logout">Logout</button>
+    </div>
+    <div class="dashboard-title">Welcome to Your Dashboard</div>
+    <!-- <div class="dashboard-nav">
+      <button class="dashboard-nav-btn" id="profile-nav" onclick="showContent('profile')">Profile</button>
+      <button class="dashboard-nav-btn" id="products-nav" onclick="showContent('products')">My Products</button>
+      <button class="dashboard-nav-btn" id="orders-nav" onclick="showContent('orders')">Orders</button>
+      <button class="dashboard-nav-btn" id="users-nav" onclick="showContent('users')">User Listing</button>
+      <button class="dashboard-nav-btn" id="messages-nav" onclick="showContent('messages')">Messages</button>
+      <button class="dashboard-nav-btn" id="settings-nav" onclick="showContent('settings')">Settings</button>
+      <button class="dashboard-nav-btn" id="stats-nav" onclick="showContent('stats')">Statistics</button>
+      <button class="dashboard-nav-btn" id="help-nav" onclick="showContent('help')">Help & Support</button>
+    </div> -->
+    <div class="dashboard-grid">
+      <div class="dashboard-card" id="profile-card" onclick="showContent('profile')">
+        <span class="dashboard-card-icon">👤</span>
+        <div class="dashboard-card-title">Profile Settings</div>
+        <div class="dashboard-card-desc">Edit your profile, password, and personal info.</div>
+      </div>
+      <div class="dashboard-card" id="products-card" onclick="showContent('products')">
+        <span class="dashboard-card-icon">📦</span>
+        <div class="dashboard-card-title">My Products</div>
+        <div class="dashboard-card-desc">View, add, or manage your listed products.</div>
+      </div>
+      <div class="dashboard-card" id="orders-card" onclick="showContent('orders')">
+        <span class="dashboard-card-icon">🛒</span>
+        <div class="dashboard-card-title">Orders</div>
+        <div class="dashboard-card-desc">Check your purchase and sales history.</div>
+      </div>
+      <div class="dashboard-card" id="users-card" onclick="showContent('users')">
+        <span class="dashboard-card-icon">👥</span>
+        <div class="dashboard-card-title">User Listing</div>
+        <div class="dashboard-card-desc">Browse and connect with other users.</div>
+      </div>
+      <div class="dashboard-card" id="messages-card" onclick="showContent('messages')">
+        <span class="dashboard-card-icon">💬</span>
+        <div class="dashboard-card-title">Messages</div>
+        <div class="dashboard-card-desc">Chat with buyers, sellers, and support.</div>
+      </div>
+      <div class="dashboard-card" id="settings-card" onclick="showContent('settings')">
+        <span class="dashboard-card-icon">⚙️</span>
+        <div class="dashboard-card-title">Settings</div>
+        <div class="dashboard-card-desc">Customize your dashboard experience.</div>
+      </div>
+      <div class="dashboard-card" id="stats-card" onclick="showContent('stats')">
+        <span class="dashboard-card-icon">📈</span>
+        <div class="dashboard-card-title">Statistics</div>
+        <div class="dashboard-card-desc">View your sales, purchases, and activity stats.</div>
+      </div>
+      <div class="dashboard-card" id="help-card" onclick="showContent('help')">
+        <span class="dashboard-card-icon">❓</span>
+        <div class="dashboard-card-title">Help & Support</div>
+        <div class="dashboard-card-desc">Get help or contact our support team.</div>
+      </div>
+    </div>
+    <div class="dashboard-content" id="profile-content">
+      <h2>Profile Settings</h2>
+      <p>Edit your name, email, password, and avatar here.</p>
+      <!-- Add profile form or info here -->
+    </div>
+    <div class="dashboard-content" id="products-content">
+      <!-- Purchased products will be loaded here by JS -->
+    </div>
+    <div class="dashboard-content" id="orders-content">
+      <h2>Orders</h2>
+      <p>View your purchase and sales history.</p>
+      <!-- Add orders table or info here -->
+    </div>
+    <div class="dashboard-content" id="users-content">
+      <h2>User Listing</h2>
+      <p>Browse and connect with other users.</p>
+      <!-- Add user listing UI here -->
+    </div>
+    <div class="dashboard-content" id="messages-content">
+      <h2>Messages</h2>
+      <p>Chat with buyers, sellers, and support.</p>
+      <!-- Add messaging UI here -->
+    </div>
+    <div class="dashboard-content" id="settings-content">
+      <h2>Settings</h2>
+      <p>Customize your dashboard experience.</p>
+      <!-- Add settings UI here -->
+    </div>
+    <div class="dashboard-content" id="stats-content">
+      <h2>Statistics</h2>
+      <p>View your sales, purchases, and activity stats.</p>
+      <!-- Add statistics UI here -->
+    </div>
+    <div class="dashboard-content" id="help-content">
+      <h2>Help & Support</h2>
+      <p>Get help or contact our support team.</p>
+      <!-- Add help/support info here -->
+    </div>
+  </div>
+</body>
+</html>

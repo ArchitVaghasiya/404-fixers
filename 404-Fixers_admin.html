@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0; /* Lighter grey for background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #d9d9d9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #083409;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #062a07;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Increased max-width for forms */
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content.form-modal {
+            text-align: left; /* Align form content left */
+        }
+        .modal-content.form-modal label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #083409;
+        }
+        .modal-content.form-modal input,
+        .modal-content.form-modal select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .active-tab {
+            border-bottom: 3px solid #083409;
+            color: #083409;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-[#083409] text-white p-4 shadow-md flex items-center justify-between rounded-b-lg">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <!-- Your ReWear logo image -->
+            <!-- The 'h-16' class sets the height to 64px. 'w-auto' maintains aspect ratio. -->
+            <!-- 'object-contain' ensures the whole image is visible within its bounds. -->
+            <img src="ReWear logo header.png" alt="ReWear Logo" class="h-16 w-auto mr-3 object-contain">
+            <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+        </div>
+
+        <!-- Navigation and User Actions -->
+        <nav class="flex items-center space-x-4 relative">
+            <!-- Dropdown Menu -->
+            <div class="relative">
+                <button id="dropdownButton" class="bg-[#d9d9d9] text-[#083409] px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out flex items-center">
+                    Menu
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Home</a>
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Browse Products</a>
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Settings</a>
+                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Help</a>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <button id="logoutButton" class="bg-[#d9d9d9] text-[#083409] px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out">
+                Logout
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-6">
+        <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Tabs Navigation -->
+            <div class="flex border-b border-gray-200">
+                <button class="tab-button flex-1 py-4 text-center font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition duration-300 ease-in-out" data-tab="manageUsers">
+                    Manage Users
+                </button>
+                <button class="tab-button flex-1 py-4 text-center font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition duration-300 ease-in-out" data-tab="manageOrders">
+                    Manage Orders
+                </button>
+                <button class="tab-button flex-1 py-4 text-center font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition duration-300 ease-in-out" data-tab="manageListing">
+                    Manage Listing
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tabContent" class="p-6">
+                <!-- Manage Users Tab Content -->
+                <div id="manageUsers" class="tab-pane">
+                    <h2 class="text-2xl font-semibold text-[#083409] mb-4">Manage Users</h2>
+                    <p class="text-gray-700 mb-6">Here you can manage user accounts, view their details, update profiles, and handle permissions. This section allows you to maintain a clean and accurate user database.</p>
+                    <button id="addUserButton" class="bg-[#083409] text-white px-4 py-2 rounded-md hover:bg-[#062a07] transition duration-300 mb-4">Add New User</button>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg shadow-md">
+                            <thead>
+                                <tr class="bg-[#d9d9d9] text-[#083409] uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left rounded-tl-lg">User ID</th>
+                                    <th class="py-3 px-6 text-left">Name</th>
+                                    <th class="py-3 px-6 text-left">Email</th>
+                                    <th class="py-3 px-6 text-center">Status</th>
+                                    <th class="py-3 px-6 text-center rounded-tr-lg">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody" class="text-gray-600 text-sm font-light">
+                                <!-- User data will be rendered here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manage Orders Tab Content -->
+                <div id="manageOrders" class="tab-pane hidden">
+                    <h2 class="text-2xl font-semibold text-[#083409] mb-4">Manage Orders</h2>
+                    <p class="text-700 mb-6">This section allows you to review, approve, and update the status of customer orders. Efficient order management ensures timely delivery and customer satisfaction.</p>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg shadow-md">
+                            <thead>
+                                <tr class="bg-[#d9d9d9] text-[#083409] uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left rounded-tl-lg">Order ID</th>
+                                    <th class="py-3 px-6 text-left">Customer</th>
+                                    <th class="py-3 px-6 text-left">Amount</th>
+                                    <th class="py-3 px-6 text-center">Status</th>
+                                    <th class="py-3 px-6 text-center rounded-tr-lg">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody" class="text-gray-600 text-sm font-light">
+                                <!-- Order data will be rendered here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manage Listing Tab Content -->
+                <div id="manageListing" class="tab-pane hidden">
+                    <h2 class="text-2xl font-semibold text-[#083409] mb-4">Manage Listing</h2>
+                    <p class="text-gray-700 mb-6">Here you can approve new product listings, classify them into appropriate categories, and ensure all product information is accurate and compliant.</p>
+                    <button id="addListingButton" class="bg-[#083409] text-white px-4 py-2 rounded-md hover:bg-[#062a07] transition duration-300 mb-4">Add New Listing</button>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg shadow-md">
+                            <thead>
+                                <tr class="bg-[#d9d9d9] text-[#083409] uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left rounded-tl-lg">Listing ID</th>
+                                    <th class="py-3 px-6 text-left">Product Name</th>
+                                    <th class="py-3 px-6 text-left">Category</th>
+                                    <th class="py-3 px-6 text-center">Status</th>
+                                    <th class="py-3 px-6 text-center rounded-tr-lg">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listingTableBody" class="text-gray-600 text-sm font-light">
+                                <!-- Listing data will be rendered here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#083409] text-white p-4 text-center text-sm rounded-t-lg mt-6">
+        <p>&copy; 2025 Admin Panel. All rights reserved.</p>
+    </footer>
+
+    <!-- Custom Confirmation Modal Structure -->
+    <div id="confirmationModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="confirmationModalTitle" class="text-xl font-bold mb-4 text-[#083409]"></h3>
+            <p id="confirmationModalMessage" class="mb-6 text-gray-700 whitespace-pre-wrap"></p> <!-- Added whitespace-pre-wrap -->
+            <div class="flex justify-center space-x-4">
+                <button id="confirmationModalConfirmBtn" class="bg-[#083409] text-white px-4 py-2 rounded-md hover:bg-[#062a07] transition duration-300">Confirm</button>
+                <button id="confirmationModalCancelBtn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-300">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Form Modal Structure -->
+    <div id="formModal" class="modal-overlay hidden">
+        <div class="modal-content form-modal">
+            <h3 id="formModalTitle" class="text-xl font-bold mb-4 text-[#083409]"></h3>
+            <form id="dynamicForm">
+                <!-- Form fields will be dynamically inserted here -->
+            </form>
+            <div class="flex justify-end space-x-4 mt-6">
+                <button id="formModalSubmitBtn" class="bg-[#083409] text-white px-4 py-2 rounded-md hover:bg-[#062a07] transition duration-300">Save</button>
+                <button id="formModalCancelBtn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-300">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mock Data (in-memory database)
+            let users = [
+                { id: 'USER001', name: 'Alice Johnson', email: 'alice@example.com', status: 'Active' },
+                { id: 'USER002', name: 'Bob Williams', email: 'bob@example.com', status: 'Pending' },
+                { id: 'USER003', name: 'Charlie Brown', email: 'charlie@example.com', status: 'Suspended' }
+            ];
+
+            let orders = [
+                { id: 'ORD001', customer: 'Alice Johnson', amount: 120.00, status: 'Pending',
+                    products: [
+                        { name: 'Men\'s T-Shirt', quantity: 2, price: 25.00 },
+                        { name: 'Denim Jeans', quantity: 1, price: 70.00 }
+                    ],
+                    shippingAddress: '123 Main St, Anytown, USA 12345',
+                    contactDetails: '555-123-4567'
+                },
+                { id: 'ORD002', customer: 'Bob Williams', amount: 75.50, status: 'Approved',
+                    products: [
+                        { name: 'Women\'s Dress', quantity: 1, price: 50.00 },
+                        { name: 'Leather Belt', quantity: 1, price: 25.50 }
+                    ],
+                    shippingAddress: '456 Oak Ave, Somewhere, USA 67890',
+                    contactDetails: '555-987-6543'
+                },
+                { id: 'ORD003', customer: 'Charlie Brown', amount: 200.00, status: 'Shipped',
+                    products: [
+                        { name: 'Winter Coat', quantity: 1, price: 150.00 },
+                        { name: 'Wool Scarf', quantity: 2, price: 25.00 }
+                    ],
+                    shippingAddress: '789 Pine Ln, Nowhere, USA 10111',
+                    contactDetails: '555-555-1212'
+                }
+            ];
+
+            const clothingCategories = [
+                { value: 'Tops', label: 'Tops' },
+                { value: 'Bottoms', label: 'Bottoms' },
+                { value: 'Dresses', label: 'Dresses' },
+                { value: 'Outerwear', label: 'Outerwear' },
+                { value: 'Activewear', label: 'Activewear' },
+                { value: 'Underwear & Sleepwear', label: 'Underwear & Sleepwear' },
+                { value: 'Accessories', label: 'Accessories' },
+                { value: 'Footwear', label: 'Footwear' }
+            ];
+
+            let listings = [
+                { id: 'LIST001', productName: 'Casual T-Shirt', category: 'Tops', status: 'Pending' },
+                { id: 'LIST002', productName: 'Skinny Jeans', category: 'Bottoms', status: 'Approved' },
+                { id: 'LIST003', productName: 'Summer Dress', category: 'Dresses', status: 'Rejected' }
+            ];
+
+            // Utility to generate unique IDs
+            function generateId(prefix) {
+                return prefix + String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+            }
+
+            // --- Table Rendering Functions ---
+
+            function renderUsers() {
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = ''; // Clear existing rows
+                users.forEach(user => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">#${user.id}</td>
+                            <td class="py-3 px-6 text-left">${user.name}</td>
+                            <td class="py-3 px-6 text-left">${user.email}</td>
+                            <td class="py-3 px-6 text-center">
+                                <span class="
+                                    ${user.status === 'Active' ? 'bg-green-200 text-green-600' : ''}
+                                    ${user.status === 'Pending' ? 'bg-yellow-200 text-yellow-600' : ''}
+                                    ${user.status === 'Suspended' ? 'bg-red-200 text-red-600' : ''}
+                                    py-1 px-3 rounded-full text-xs
+                                ">${user.status}</span>
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex item-center justify-center space-x-2">
+                                    <button class="action-button bg-[#083409] text-white px-3 py-1 rounded-md text-xs hover:bg-[#062a07] transition duration-300" data-action="editUser" data-id="${user.id}">Edit</button>
+                                    <button class="action-button bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600 transition duration-300" data-action="deleteUser" data-id="${user.id}">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            function renderOrders() {
+                const tbody = document.getElementById('orderTableBody');
+                tbody.innerHTML = ''; // Clear existing rows
+                orders.forEach(order => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">#${order.id}</td>
+                            <td class="py-3 px-6 text-left">${order.customer}</td>
+                            <td class="py-3 px-6 text-left">₹${order.amount.toFixed(2)}</td>
+                            <td class="py-3 px-6 text-center">
+                                <span class="
+                                    ${order.status === 'Pending' ? 'bg-yellow-200 text-yellow-600' : ''}
+                                    ${order.status === 'Approved' ? 'bg-green-200 text-green-600' : ''}
+                                    ${order.status === 'Shipped' ? 'bg-gray-200 text-gray-600' : ''}
+                                    py-1 px-3 rounded-full text-xs
+                                ">${order.status}</span>
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex item-center justify-center space-x-2">
+                                    <button class="action-button bg-[#083409] text-white px-3 py-1 rounded-md text-xs hover:bg-[#062a07] transition duration-300" data-action="viewOrder" data-id="${order.id}">View</button>
+                                    ${order.status === 'Pending' ? `
+                                        <button class="action-button bg-green-500 text-white px-3 py-1 rounded-md text-xs hover:bg-green-600 transition duration-300" data-action="approveOrder" data-id="${order.id}">Approve</button>
+                                        <button class="action-button bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600 transition duration-300" data-action="rejectOrder" data-id="${order.id}">Reject</button>
+                                    ` : `
+                                        <button class="action-button bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 transition duration-300" data-action="updateOrder" data-id="${order.id}">Update</button>
+                                    `}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            function renderListings() {
+                const tbody = document.getElementById('listingTableBody');
+                tbody.innerHTML = ''; // Clear existing rows
+                listings.forEach(listing => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">#${listing.id}</td>
+                            <td class="py-3 px-6 text-left">${listing.productName}</td>
+                            <td class="py-3 px-6 text-left">${listing.category}</td>
+                            <td class="py-3 px-6 text-center">
+                                <span class="
+                                    ${listing.status === 'Pending' ? 'bg-yellow-200 text-yellow-600' : ''}
+                                    ${listing.status === 'Approved' ? 'bg-green-200 text-green-600' : ''}
+                                    ${listing.status === 'Rejected' ? 'bg-red-200 text-red-600' : ''}
+                                    py-1 px-3 rounded-full text-xs
+                                ">${listing.status}</span>
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex item-center justify-center space-x-2">
+                                    ${listing.status === 'Pending' ? `
+                                        <button class="action-button bg-green-500 text-white px-3 py-1 rounded-md text-xs hover:bg-green-600 transition duration-300" data-action="approveListing" data-id="${listing.id}">Approve</button>
+                                        <button class="action-button bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-600 transition duration-300" data-action="rejectListing" data-id="${listing.id}">Reject</button>
+                                    ` : `
+                                        <button class="action-button bg-[#083409] text-white px-3 py-1 rounded-md text-xs hover:bg-[#062a07] transition duration-300" data-action="editListing" data-id="${listing.id}">Edit</button>
+                                        <button class="action-button bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-600 transition duration-300" data-action="classifyListing" data-id="${listing.id}">Classify</button>
+                                    `}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            // --- Tab Functionality ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active-tab'));
+                    tabPanes.forEach(pane => pane.classList.add('hidden'));
+
+                    button.classList.add('active-tab');
+
+                    const targetTab = button.dataset.tab;
+                    document.getElementById(targetTab).classList.remove('hidden');
+
+                    // Re-render tables when tab changes to ensure fresh data
+                    if (targetTab === 'manageUsers') renderUsers();
+                    else if (targetTab === 'manageOrders') renderOrders();
+                    else if (targetTab === 'manageListing') renderListings();
+                });
+            });
+
+            // Set initial active tab and render its content
+            const initialTabButton = document.querySelector('.tab-button[data-tab="manageUsers"]');
+            initialTabButton.click(); // This will trigger renderUsers()
+
+            // --- Dropdown Functionality ---
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            dropdownButton.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('hidden');
+            });
+
+            window.addEventListener('click', (event) => {
+                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+
+            // --- Custom Modal Elements ---
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmationModalTitle = document.getElementById('confirmationModalTitle');
+            const confirmationModalMessage = document.getElementById('confirmationModalMessage');
+            const confirmationModalConfirmBtn = document.getElementById('confirmationModalConfirmBtn');
+            const confirmationModalCancelBtn = document.getElementById('confirmationModalCancelBtn');
+
+            const formModal = document.getElementById('formModal');
+            const formModalTitle = document.getElementById('formModalTitle');
+            const dynamicForm = document.getElementById('dynamicForm');
+            const formModalSubmitBtn = document.getElementById('formModalSubmitBtn');
+            const formModalCancelBtn = document.getElementById('formModalCancelBtn');
+
+            // Function to show custom confirmation modal
+            function showConfirmationModal(title, message, onConfirm) {
+                confirmationModalTitle.textContent = title;
+                confirmationModalMessage.textContent = message;
+                confirmationModal.classList.remove('hidden');
+
+                confirmationModalConfirmBtn.onclick = () => {
+                    onConfirm();
+                    confirmationModal.classList.add('hidden');
+                };
+                confirmationModalCancelBtn.onclick = () => {
+                    confirmationModal.classList.add('hidden');
+                };
+            }
+
+            // Function to show dynamic form modal
+            function showFormModal(title, fields, currentData, onSubmit) {
+                formModalTitle.textContent = title;
+                dynamicForm.innerHTML = ''; // Clear previous form fields
+
+                // Create form fields
+                fields.forEach(field => {
+                    const div = document.createElement('div');
+                    div.className = 'mb-4';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = field.name;
+                    label.textContent = field.label;
+                    div.appendChild(label);
+
+                    let input;
+                    if (field.type === 'select') {
+                        input = document.createElement('select');
+                        field.options.forEach(option => {
+                            const opt = document.createElement('option');
+                            opt.value = option.value;
+                            opt.textContent = option.label;
+                            input.appendChild(opt);
+                        });
+                    } else {
+                        input = document.createElement('input');
+                        input.type = field.type;
+                    }
+                    input.id = field.name;
+                    input.name = field.name;
+                    // Set value for existing data, or default for new entries
+                    if (currentData && currentData[field.name] !== undefined) {
+                        input.value = currentData[field.name];
+                    } else if (field.type === 'select' && field.options.length > 0) {
+                        input.value = field.options[0].value; // Default to first option
+                    } else {
+                        input.value = '';
+                    }
+
+                    input.className = 'w-full p-2 border border-gray-300 rounded-md';
+                    div.appendChild(input);
+                    dynamicForm.appendChild(div);
+                });
+
+                formModal.classList.remove('hidden');
+
+                formModalSubmitBtn.onclick = (event) => {
+                    event.preventDefault(); // Prevent default form submission
+                    const formData = {};
+                    fields.forEach(field => {
+                        formData[field.name] = document.getElementById(field.name).value;
+                        if (field.type === 'number') {
+                            formData[field.name] = parseFloat(formData[field.name]);
+                        }
+                    });
+                    onSubmit(formData);
+                    formModal.classList.add('hidden');
+                };
+                formModalCancelBtn.onclick = () => {
+                    formModal.classList.add('hidden');
+                };
+            }
+
+            // --- Logout Functionality ---
+            const logoutButton = document.getElementById('logoutButton');
+            logoutButton.addEventListener('click', () => {
+                showConfirmationModal(
+                    'Confirm Logout',
+                    'Are you sure you want to log out?',
+                    () => {
+                        console.log('User logged out.');
+                        // In a real application, redirect to login page or clear session
+                        // window.location.href = '/login';
+                    }
+                );
+            });
+
+            // --- "Add New User" Button ---
+            document.getElementById('addUserButton').addEventListener('click', () => {
+                const fields = [
+                    { name: 'name', label: 'Name', type: 'text' },
+                    { name: 'email', label: 'Email', type: 'email' },
+                    { name: 'status', label: 'Status', type: 'select', options: [
+                        { value: 'Active', label: 'Active' },
+                        { value: 'Pending', label: 'Pending' },
+                        { value: 'Suspended', label: 'Suspended' }
+                    ]}
+                ];
+                showFormModal('Add New User', fields, null, (newUser) => {
+                    newUser.id = generateId('USER');
+                    users.push(newUser);
+                    renderUsers();
+                    console.log('New user added:', newUser);
+                });
+            });
+
+            // --- "Add New Listing" Button ---
+            document.getElementById('addListingButton').addEventListener('click', () => {
+                const fields = [
+                    { name: 'productName', label: 'Product Name', type: 'text' },
+                    { name: 'category', label: 'Category', type: 'select', options: clothingCategories },
+                    { name: 'status', label: 'Status', type: 'select', options: [
+                        { value: 'Pending', label: 'Pending' },
+                        { value: 'Approved', label: 'Approved' },
+                        { value: 'Rejected', label: 'Rejected' }
+                    ]}
+                ];
+                showFormModal('Add New Listing', fields, null, (newListing) => {
+                    newListing.id = generateId('LIST');
+                    listings.push(newListing);
+                    renderListings();
+                    console.log('New listing added:', newListing);
+                });
+            });
+
+
+            // --- Delegated Event Listener for Action Buttons ---
+            document.getElementById('tabContent').addEventListener('click', (event) => {
+                const button = event.target.closest('.action-button');
+                if (!button) return; // Not an action button
+
+                const action = button.dataset.action;
+                const id = button.dataset.id;
+
+                let item;
+                let dataArray;
+                let renderFunction;
+
+                if (action.includes('User')) {
+                    dataArray = users;
+                    renderFunction = renderUsers;
+                    item = users.find(u => u.id === id);
+                } else if (action.includes('Order')) {
+                    dataArray = orders;
+                    renderFunction = renderOrders;
+                    item = orders.find(o => o.id === id);
+                } else if (action.includes('Listing')) {
+                    dataArray = listings;
+                    renderFunction = renderListings;
+                    item = listings.find(l => l.id === id);
+                }
+
+                switch (action) {
+                    case 'editUser':
+                        showFormModal('Edit User', [
+                            { name: 'name', label: 'Name', type: 'text' },
+                            { name: 'email', label: 'Email', type: 'email' },
+                            { name: 'status', label: 'Status', type: 'select', options: [
+                                { value: 'Active', label: 'Active' },
+                                { value: 'Pending', label: 'Pending' },
+                                { value: 'Suspended', label: 'Suspended' }
+                            ]}
+                        ], item, (updatedData) => {
+                            Object.assign(item, updatedData);
+                            renderUsers();
+                            console.log('User updated:', item);
+                        });
+                        break;
+                    case 'deleteUser':
+                        showConfirmationModal(
+                            'Confirm Deletion',
+                            `Are you sure you want to delete user #${id}? This action cannot be undone.`,
+                            () => {
+                                users = users.filter(u => u.id !== id);
+                                renderUsers();
+                                console.log(`User #${id} deleted.`);
+                            }
+                        );
+                        break;
+                    case 'approveOrder':
+                        showConfirmationModal(
+                            'Approve Order',
+                            `Are you sure you want to approve order #${id}?`,
+                            () => {
+                                item.status = 'Approved';
+                                renderOrders();
+                                console.log(`Order #${id} approved.`);
+                            }
+                        );
+                        break;
+                    case 'rejectOrder':
+                        showConfirmationModal(
+                            'Reject Order',
+                            `Are you sure you want to reject order #${id}?`,
+                            () => {
+                                item.status = 'Rejected';
+                                renderOrders();
+                                console.log(`Order #${id} rejected.`);
+                            }
+                        );
+                        break;
+                    case 'viewOrder':
+                        let productDetails = item.products.map(p => `- ${p.name} (Qty: ${p.quantity}, Price: ₹${p.price.toFixed(2)})`).join('\n');
+                        let orderMessage = `Order ID: #${item.id}\nCustomer: ${item.customer}\nTotal Amount: ₹${item.amount.toFixed(2)}\nStatus: ${item.status}\n\nShipping Address: ${item.shippingAddress}\nContact: ${item.contactDetails}\n\nProducts:\n${productDetails}`;
+
+                        showConfirmationModal(
+                            'Order Details',
+                            orderMessage,
+                            () => {
+                                console.log(`Simulating sending shipping details for order #${item.id} to contact: ${item.contactDetails}`);
+                                // In a real application, you would integrate with an SMS/email service here
+                            }
+                        );
+                        break;
+                    case 'updateOrder':
+                        showFormModal('Update Order', [
+                            { name: 'customer', label: 'Customer Name', type: 'text' },
+                            { name: 'amount', label: 'Amount', type: 'number' },
+                            { name: 'shippingAddress', label: 'Shipping Address', type: 'text' },
+                            { name: 'contactDetails', label: 'Contact Details', type: 'text' },
+                            { name: 'status', label: 'Status', type: 'select', options: [
+                                { value: 'Pending', label: 'Pending' },
+                                { value: 'Approved', label: 'Approved' },
+                                { value: 'Shipped', label: 'Shipped' },
+                                { value: 'Delivered', label: 'Delivered' },
+                                { value: 'Cancelled', label: 'Cancelled' }
+                            ]}
+                        ], item, (updatedData) => {
+                            Object.assign(item, updatedData);
+                            renderOrders();
+                            console.log('Order updated:', item);
+                        });
+                        break;
+                    case 'approveListing':
+                        showConfirmationModal(
+                            'Approve Listing',
+                            `Are you sure you want to approve listing #${id}?`,
+                            () => {
+                                item.status = 'Approved';
+                                renderListings();
+                                console.log(`Listing #${id} approved.`);
+                            }
+                        );
+                        break;
+                    case 'rejectListing':
+                        showConfirmationModal(
+                            'Reject Listing',
+                            `Are you sure you want to reject listing #${id}?`,
+                            () => {
+                                item.status = 'Rejected';
+                                renderListings();
+                                console.log(`Listing #${id} rejected.`);
+                            }
+                        );
+                        break;
+                    case 'editListing':
+                        showFormModal('Edit Listing', [
+                            { name: 'productName', label: 'Product Name', type: 'text' },
+                            { name: 'category', label: 'Category', type: 'select', options: clothingCategories }, // Using clothing categories
+                            { name: 'status', label: 'Status', type: 'select', options: [
+                                { value: 'Pending', label: 'Pending' },
+                                { value: 'Approved', label: 'Approved' },
+                                { value: 'Rejected', label: 'Rejected' }
+                            ]}
+                        ], item, (updatedData) => {
+                            Object.assign(item, updatedData);
+                            renderListings();
+                            console.log('Listing updated:', item);
+                        });
+                        break;
+                    case 'classifyListing':
+                        showFormModal('Classify Listing', [
+                            { name: 'category', label: 'New Category', type: 'select', options: clothingCategories } // Using clothing categories
+                        ], item, (updatedData) => {
+                            item.category = updatedData.category;
+                            renderListings();
+                            console.log(`Listing #${id} reclassified to: ${item.category}`);
+                        });
+                        break;
+                    case 're-submitListing':
+                        showConfirmationModal(
+                            'Re-submit Listing',
+                            `Are you sure you want to re-submit listing #${id} for approval?`,
+                            () => {
+                                item.status = 'Pending'; // Change status back to pending
+                                renderListings();
+                                console.log(`Listing #${id} re-submitted.`);
+                            }
+                        );
+                        break;
+                    default:
+                        console.log(`Unhandled action: ${action} for ID: ${id}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

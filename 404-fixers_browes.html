@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Browse Items - ReWear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark-green: #083409;
+      --light-green: #6dd57b;
+      --bg-gray: #f5f7f6;
+      --white: #fff;
+      --text-dark: #1a1a1a;
+      --text-light: #eef5ee;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #eaf7ec, #d6f0dc);
+      color: var(--text-dark);
+    }
+
+    .header {
+      width: 100%;
+      background: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      box-sizing: border-box;
+      height: 70px;
+      box-shadow: 0 2px 8px var(--light-green);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--light-green);
+      letter-spacing: 2px;
+      text-decoration: none;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      height: 70px;
+      vertical-align: middle;
+    }
+
+    .nav {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav a {
+      color: var(--light-green);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 24px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: var(--light-green);
+      color: #083409;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        flex-direction: column;
+        height: auto;
+        padding: 12px 16px;
+        align-items: flex-start;
+      }
+
+      .nav {
+        gap: 14px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+    }
+
+    .product-section {
+      max-width: 1100px;
+      margin: 48px auto 64px auto;
+      padding: 0 24px;
+    }
+
+    .product-section h2 {
+      color: #083409;
+      margin-bottom: 16px;
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+
+    /* Sort filters container */
+    .filters-container {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filters-container label {
+      margin-right: 8px;
+      font-weight: 600;
+      color: #083409;
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+
+    select {
+      padding: 8px 14px;
+      border-radius: 30px;
+      border: 2px solid var(--light-green);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #083409;
+      outline: none;
+      transition: border-color 0.3s;
+      background: var(--white);
+      min-width: 160px;
+    }
+
+    select:hover,
+    select:focus {
+      border-color: var(--dark-green);
+    }
+
+    /* Grid layout for products */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .product-card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+      padding: 20px 20px 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgb(0 0 0 / 0.15);
+    }
+
+    .product-card img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 14px rgb(0 0 0 / 0.1);
+      background: var(--bg-gray);
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .product-title {
+      font-size: 1.3rem;
+      color: var(--dark-green);
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .product-desc {
+      font-size: 1rem;
+      color: #4a4a4a;
+      margin-bottom: 14px;
+      text-align: center;
+      min-height: 56px;
+      user-select: none;
+    }
+
+    .product-price {
+      color: var(--light-green);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+
+    .product-btn {
+      background: var(--dark-green);
+      color: var(--text-light);
+      border: none;
+      border-radius: 30px;
+      padding: 12px 36px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .product-btn:hover {
+      background: var(--light-green);
+      color: var(--dark-green);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--dark-green);
+      text-align: center;
+      padding: 24px 10px 18px 10px;
+      font-size: 1.05rem;
+      color: var(--text-light);
+      user-select: none;
+    }
+
+    .footer a {
+      color: var(--light-green);
+      text-decoration: underline;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      .product-card img {
+        width: 160px;
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <a href="404-fixers_landing page.html" class="logo">
+      <img src="ReWear logo header.png" alt="ReWear Logo">
+    </a>
+    <nav class="nav">
+      <a href="404-fixers_homepage.html">Home</a>
+      <a href="browse.html" class="active">Browse</a>
+      <a href="404-fixers_swapping.html">swaping</a>
+    </nav>
+  </div>
+
+  <div class="product-section">
+    <h2>Browse All Items</h2>
+
+    <div class="filters-container">
+      <div>
+        <label for="categoryFilter">Sort by Category:</label>
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+          <option value="jackets">Jackets</option>
+          <option value="dresses">Dresses</option>
+          <option value="hoodies">Hoodies</option>
+          <option value="kids">Kids</option>
+          <option value="kurti">Kurtis</option>
+          <option value="shirts">Shirts</option>
+          <option value="jeans">Jeans</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="priceFilter">Filter by Price:</label>
+        <select id="priceFilter">
+          <option value="all">All Prices</option>
+          <option value="below300">Below ₹300</option>
+          <option value="300to500">₹300 - ₹500</option>
+          <option value="above500">Above ₹500</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Product cards will be generated here -->
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 ReWear Clothing. All rights reserved. | <a href="#contact">Contact Us</a>
+  </div>
+
+  <script>
+    const products = [
+      {
+        category: "jackets",
+        img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+        title: "Denim Jacket",
+        desc: "Classic blue denim, size M. Lightly used.",
+        price: 499,
+      },
+      {
+        category: "dresses",
+        img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80",
+        title: "Summer Dress",
+        desc: "Floral print, size S. Light and breezy.",
+        price: 399,
+      },
+      {
+        category: "hoodies",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+        title: "Men's Hoodie",
+        desc: "Grey hoodie, size L. Cozy and comfortable.",
+        price: 599,
+      },
+      {
+        category: "kids",
+        img: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
+        title: "Kids' T-shirt",
+        desc: "Cartoon print, size 6-7Y. Soft cotton.",
+        price: 199,
+      },
+      {
+        category: "kurti",
+        img: "https://images.unsplash.com/photo-1469398715555-76331a6c7c9b?auto=format&fit=crop&w=400&q=80",
+        title: "Women's Kurti",
+        desc: "Elegant green kurti, size M. Hardly worn.",
+        price: 349,
+      },
+      {
+        category: "shirts",
+        img: "https://images.unsplash.com/photo-1514995669114-d1c1b7a83a48?auto=format&fit=crop&w=400&q=80",
+        title: "Men's Shirt",
+        desc: "Checked shirt, size L. Like new.",
+        price: 299,
+      },
+      {
+        category: "jeans",
+        img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+        title: "Women's Jeans",
+        desc: "Blue skinny jeans, size 28. Good condition.",
+        price: 399,
+      },
+      {
+        category: "kids",
+        img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+        title: "Kids' Dress",
+        desc: "Pink party dress, size 5Y. Barely used.",
+        price: 249,
+      },
+    ];
+
+    const productGrid = document.getElementById("productGrid");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const priceFilter = document.getElementById("priceFilter");
+
+    function renderProducts(category = "all", priceRange = "all") {
+      productGrid.innerHTML = "";
+
+      let filteredProducts = products;
+
+      // Filter by category
+      if (category !== "all") {
+        filteredProducts = filteredProducts.filter((p) => p.category === category);
+      }
+
+      // Filter by price range
+      if (priceRange !== "all") {
+        filteredProducts = filteredProducts.filter((p) => {
+          if (priceRange === "below300") return p.price < 300;
+          if (priceRange === "300to500") return p.price >= 300 && p.price <= 500;
+          if (priceRange === "above500") return p.price > 500;
+          return true;
+        });
+      }
+
+      if (filteredProducts.length === 0) {
+        productGrid.innerHTML = `<p style="color: var(--dark-green); font-weight:600; font-size:1.2rem; text-align:center; grid-column: 1/-1;">No items found with selected filters.</p>`;
+        return;
+      }
+
+      filteredProducts.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        card.innerHTML = `
+          <img src="${product.img}" alt="${product.title}" loading="lazy" />
+          <div class="product-title">${product.title}</div>
+          <div class="product-desc">${product.desc}</div>
+          <div class="product-price">&#8377;${product.price}</div>
+          <button class="product-btn">Swap Now</button>
+        `;
+
+        productGrid.appendChild(card);
+      });
+    }
+
+    // Event listeners for both filters
+    categoryFilter.addEventListener("change", () => {
+      renderProducts(categoryFilter.value, priceFilter.value);
+    });
+
+    priceFilter.addEventListener("change", () => {
+      renderProducts(categoryFilter.value, priceFilter.value);
+    });
+
+    // Initial render all products
+    renderProducts();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Swaps - ReWear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7f6;
+      color: #083409;
+    }
+
+    .header {
+      background-color: #083409;
+      color: #fff;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 28px;
+      margin-left: auto;
+    }
+
+    .nav a {
+      color: #57d359;
+      text-decoration: none;
+      font-size: 1.08rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 20px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: #57d359;
+      color: #083409;
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 12px 16px;
+      }
+
+      .nav {
+        margin-left: 0;
+        margin-top: 10px;
+        justify-content: flex-end;
+        width: 100%;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      text-align: left;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .swap-card {
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .swap-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .swap-details {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .swap-details h3 {
+      margin: 0;
+    }
+
+    .swap-details p {
+      margin: 6px 0;
+      color: #444;
+    }
+
+    .swap-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #083409;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button.cancel {
+      background: #d92626;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <a href="#" class="logo">
+      <img src="ReWear logo header.png" alt="ReWear Logo">
+    </a>
+    <nav class="nav">
+      <a href="404-fixers_homepage.html">Home</a>
+      <a href="404-fixers_browes.html">Browse</a>
+      <a href="404-fixers_swapping.html" class="active">Dashboard</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>My Swap Requests</h2>
+
+    <div class="swap-card">
+      <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80" alt="">
+      <div class="swap-details">
+        <h3>Denim Jacket</h3>
+        <p>Status: Pending Approval</p>
+        <p>Requested on: 10 July 2025</p>
+        <div class="swap-actions">
+          <button>Cancel Request</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="swap-card">
+      <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80" alt="">
+      <div class="swap-details">
+        <h3>Summer Dress</h3>
+        <p>Status: Approved</p>
+        <p>Swap Date: 15 July 2025</p>
+        <div class="swap-actions">
+          <button>View Details</button>
+        </div>
+      </div>
+    </div>
+
+    <h2>Incoming Swap Offers</h2>
+
+    <div class="swap-card">
+      <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80" alt="">
+      <div class="swap-details">
+        <h3>Men's Hoodie</h3>
+        <p>From: user123@example.com</p>
+        <p>Received on: 11 July 2025</p>
+        <div class="swap-actions">
+          <button>Accept</button>
+          <button class="cancel">Decline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
